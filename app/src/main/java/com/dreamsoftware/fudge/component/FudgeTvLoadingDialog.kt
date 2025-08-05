@@ -14,7 +14,8 @@ import androidx.tv.material3.MaterialTheme
 @Composable
 fun FudgeTvLoadingDialog(
     isShowingDialog: Boolean,
-    @DrawableRes mainLogoRes: Int,
+    @DrawableRes mainLogoRes: Int? = null,
+    mainLogo: @Composable ((Modifier) -> Unit) ? = null,
     @StringRes titleRes: Int,
     @StringRes descriptionRes: Int,
     containerColor: Color? = null,
@@ -23,6 +24,7 @@ fun FudgeTvLoadingDialog(
     FudgeTvDialog(
         isVisible = isShowingDialog,
         mainLogoRes = mainLogoRes,
+        mainLogo = mainLogo,
         titleRes = titleRes,
         descriptionRes = descriptionRes,
         containerColor = containerColor,

@@ -36,7 +36,8 @@ import com.dreamsoftware.fudge.R
 fun FudgeTvDialog(
     isVisible: Boolean,
     modifier: Modifier = Modifier,
-    @DrawableRes mainLogoRes: Int,
+    @DrawableRes mainLogoRes: Int? = null,
+    mainLogo: @Composable ((Modifier) -> Unit) ? = null,
     @StringRes titleRes: Int? = null,
     @StringRes descriptionRes: Int? = null,
     title: String? = null,
@@ -60,6 +61,7 @@ fun FudgeTvDialog(
             CommonDialogUI(
                 modifier = modifier,
                 mainLogoRes = mainLogoRes,
+                mainLogo = mainLogo,
                 title = titleRes?.let { stringResource(id = it) } ?: title,
                 description = descriptionRes?.let { stringResource(id = it) } ?: description,
                 cancelRes = cancelRes,
@@ -78,7 +80,8 @@ fun FudgeTvDialog(
 @Composable
 private fun CommonDialogUI(
     modifier: Modifier = Modifier,
-    @DrawableRes mainLogoRes: Int,
+    @DrawableRes mainLogoRes: Int? = null,
+    mainLogo: @Composable ((Modifier) -> Unit) ? = null,
     title: String? = null,
     description: String? = null,
     @StringRes cancelRes: Int,
@@ -104,13 +107,21 @@ private fun CommonDialogUI(
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 if(!isKeyboardOpen) {
-                    Image(
-                        painter = painterResource(id = mainLogoRes),
-                        contentDescription = null, // decorative
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .size(150.dp)
-                    )
+                    with(
+                        Modifier
+                        .padding(top = 10.dp)
+                        .size(150.dp)
+                    ) {
+                        mainLogoRes?.let { logoRes ->
+                            Image(
+                                painter = painterResource(id = logoRes),
+                                contentDescription = null, // decorative
+                                modifier = this
+                            )
+                        } ?: run {
+                            mainLogo?.invoke(this)
+                        }
+                    }
                 }
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                     if(!isKeyboardOpen) {

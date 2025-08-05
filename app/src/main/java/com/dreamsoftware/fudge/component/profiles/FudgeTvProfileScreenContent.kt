@@ -1,5 +1,6 @@
 package com.dreamsoftware.fudge.component.profiles
 
+import android.media.Image
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -35,8 +36,10 @@ fun FudgeTvProfileScreenContent(
     isLoading: Boolean? = null,
     error: String?,
     onErrorAccepted: () -> Unit,
-    @DrawableRes mainLogoRes: Int,
-    @DrawableRes mainLogoInverseRes: Int,
+    @DrawableRes mainLogoRes: Int? = null,
+    @DrawableRes mainLogoInverseRes: Int? = null,
+    mainLogo: @Composable ((Modifier) -> Unit)? = null,
+    mainLogoInverse: @Composable ((Modifier) -> Unit)? = null,
     @StringRes loadingTitleRes: Int,
     @StringRes loadingDescriptionRes: Int,
     @StringRes mainTitleRes: Int? = null,
@@ -68,17 +71,28 @@ fun FudgeTvProfileScreenContent(
                 FudgeTvLoadingDialog(
                     isShowingDialog = it,
                     mainLogoRes = mainLogoRes,
+                    mainLogo = mainLogo,
                     titleRes = loadingTitleRes,
                     descriptionRes = loadingDescriptionRes
                 )
             }
-            FudgeTvImageRes(
-                modifier = Modifier
+
+            with(
+                Modifier
                     .align(Alignment.TopStart)
                     .padding(20.dp)
-                    .height(90.dp),
-                imageRes = mainLogoInverseRes
-            )
+                    .height(90.dp)
+            ) {
+                mainLogoInverseRes?.let { logoRes ->
+                    FudgeTvImageRes(
+                        modifier = this,
+                        imageRes = logoRes
+                    )
+                } ?: run {
+                    mainLogoInverse?.invoke(this)
+                }
+            }
+
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)
